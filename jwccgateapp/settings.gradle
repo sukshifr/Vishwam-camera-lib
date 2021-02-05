@@ -1,0 +1,3 @@
+include ':jwccgateapplib'
+include ':app'
+rootProject.name = "JwccGateApp"
