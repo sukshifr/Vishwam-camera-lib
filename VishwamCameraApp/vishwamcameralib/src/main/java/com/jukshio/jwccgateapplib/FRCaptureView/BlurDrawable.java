@@ -1,48 +1,26 @@
 package com.jukshio.jwccgateapplib.FRCaptureView;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.LinearGradient;
+import android.graphics.ColorFilter;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.RectF;
-import android.graphics.Shader;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
-import android.util.DisplayMetrics;
+import android.graphics.PixelFormat;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
-
-import com.jukshio.jwccgateapplib.R;
 
 import java.lang.ref.WeakReference;
 import java.util.InputMismatchException;
 
-import static com.jukshio.jwccgateapplib.FRCaptureView.FaceGraphic.mHintOutlinePaint2;
-
-
-@SuppressLint("ViewConstructor")
-public class CameraView extends View {
-
-    private Bitmap bitmap;
-    private Canvas cnvs;
-    private Paint p = new Paint();
-    private Paint transparentPaint = new Paint();
-    private Paint semiTransparentPaint = new Paint();
-    private int parentWidth;
-    private int parentHeight;
-
-    int height;
-    int width;
-    public RectF oval1;
-    Context context;
-    public static int circleX, circleY, circleRadius;
+/**
+ * A drawable that draws the target view as blurred using fast blur
+ * <p/>
+ * <p/>
+ * TODO:we might use setBounds() to draw only part a of the target view
+ * <p/>
+ * Created by 10uR on 24.5.2014.
+ */
+public class BlurDrawable extends Drawable {
 
     private WeakReference<View> targetRef;
     private Bitmap blurred;
@@ -50,67 +28,39 @@ public class CameraView extends View {
     private int radius;
 
 
-    public CameraView(Context context) {
-        super(context);
-//        this.rCustomLayout = relativeLayout;
-        this.context = context;
-        init();
+    public BlurDrawable(View target) {
+        this(target, 10);
     }
 
-    @SuppressLint("NewApi")
-    private void init() {
-
-        transparentPaint.setColor(getResources().getColor(R.color.whiteopacity));
-        transparentPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
-//        semiTransparentPaint.setColor(getResources().getColor(android.R.color.white));
-        Shader gradient = new LinearGradient(0,0,0,getHeight(), getResources().getColor(R.color.whiteopacity), getResources().getColor(R.color.whiteopacity),Shader.TileMode.MIRROR);
-        semiTransparentPaint.setDither(true);
-        semiTransparentPaint.setShader(gradient);
-        p.setAntiAlias(true);
-        p.setFilterBitmap(true);
-
-
-    }
-
-    @SuppressLint({"DrawAllocation", "CanvasSize"})
-    @Override
-    protected void onDraw(Canvas canvas) {
-        super.onDraw(canvas);
-
-        DisplayMetrics metrics = new DisplayMetrics();
-        ((Activity)getContext()).getWindowManager().getDefaultDisplay().getMetrics(metrics);
-
-
-
-        height = metrics.heightPixels;
-        width = metrics.widthPixels;
-
-        circleX = width / 2;
-        circleY = height / 2;
-
-        circleRadius = (int) (width * 0.4);
-
-        bitmap = Bitmap.createBitmap(parentWidth, parentHeight, Bitmap.Config.ARGB_8888);
-        cnvs = new Canvas(bitmap);
-
-        oval1 = new RectF((width/2) - (width*2/5), (width*2/3) - (width*2/5), (width/2) + (width*2/5), (width*2/3) + (width*2/5));
-
-        cnvs.drawRect(0, 0, cnvs.getWidth(), cnvs.getHeight(), semiTransparentPaint);
-        cnvs.drawOval(oval1,transparentPaint );
-
-
-        canvas.drawBitmap(bitmap, 0, 0, semiTransparentPaint);
+    public BlurDrawable(View target, int radius) {
+        this.targetRef = new WeakReference<View>(target);
+        setRadius(radius);
+        target.setDrawingCacheEnabled(true);
+        target.setDrawingCacheQuality(View.DRAWING_CACHE_QUALITY_AUTO);
+        paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setFilterBitmap(true);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-
-        parentWidth = MeasureSpec.getSize(widthMeasureSpec);
-        parentHeight = MeasureSpec.getSize(heightMeasureSpec);
-
-        this.setMeasuredDimension(parentWidth, parentHeight);
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    public void draw(Canvas canvas) {
+        if (blurred == null) {
+            View target = targetRef.get();
+            if (target != null) {
+                Bitmap bitmap = target.getDrawingCache(true);
+                if (bitmap == null) return;
+                blurred = fastBlur(bitmap, radius);
+            }
+        }
+        if (blurred != null && !blurred.isRecycled())
+            canvas.drawBitmap(blurred, 0, 0, paint);
     }
+
+    /**
+     * Set the bluring radius that will be applied to target view's bitmap
+     *
+     * @param radius should be 0-100
+     */
     public void setRadius(int radius) {
         if (radius < 0 || radius > 100)
             throw new InputMismatchException("Radius must be 0 <= radius <= 100 !");
@@ -119,28 +69,62 @@ public class CameraView extends View {
             blurred.recycle();
             blurred = null;
         }
-        invalidate();
+        invalidateSelf();
     }
 
-    public Bitmap transform(Bitmap bitmap) {
-        Bitmap blurredBitmap = Bitmap.createBitmap(bitmap.getWidth(),
-                bitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        // Initialize RenderScript and the script to be used
-        RenderScript renderScript = RenderScript.create(context);
-        ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(renderScript, Element.U8_4(renderScript));
-        // Allocate memory for Renderscript to work with
-        Allocation input = Allocation.createFromBitmap(renderScript, bitmap);
-        Allocation output = Allocation.createFromBitmap(renderScript, blurredBitmap);
 
-        script.setInput(input);
-        script.setRadius(25f);
-        script.forEach(output);
-        output.copyTo(blurredBitmap);
-
-        renderScript.destroy();
-//        bitmap.recycle();
-        return blurredBitmap;
+    public int getRadius() {
+        return radius;
     }
+
+    @Override
+    public void setAlpha(int alpha) {
+    }
+
+
+    @Override
+    public void setColorFilter(ColorFilter cf) {
+
+    }
+
+    @Override
+    public int getOpacity() {
+        return PixelFormat.TRANSLUCENT;
+    }
+
+    /**
+     * from https://stackoverflow.com/a/10028267/3133545
+     * <p/>
+     * <p/>
+     * <p/>
+     * Stack Blur v1.0 from
+     * http://www.quasimondo.com/StackBlurForCanvas/StackBlurDemo.html
+     * <p/>
+     * Java Author: Mario Klingemann <mario at quasimondo.com>
+     * http://incubator.quasimondo.com
+     * created Feburary 29, 2004
+     * Android port : Yahel Bouaziz <yahel at kayenko.com>
+     * http://www.kayenko.com
+     * ported april 5th, 2012
+     * <p/>
+     * This is a compromise between Gaussian Blur and Box blur
+     * It creates much better looking blurs than Box Blur, but is
+     * 7x faster than my Gaussian Blur implementation.
+     * <p/>
+     * I called it Stack Blur because this describes best how this
+     * filter works internally: it creates a kind of moving stack
+     * of colors whilst scanning through the image. Thereby it
+     * just has to add one new block of color to the right side
+     * of the stack and remove the leftmost color. The remaining
+     * colors on the topmost layer of the stack are either added on
+     * or reduced by one, depending on if they are on the right or
+     * on the left side of the stack.
+     * <p/>
+     * If you are using this algorithm in your code please add
+     * the following line:
+     * <p/>
+     * Stack Blur Algorithm by Mario Klingemann <mario@quasimondo.com>
+     */
     private static Bitmap fastBlur(Bitmap sentBitmap, int radius) {
 
 

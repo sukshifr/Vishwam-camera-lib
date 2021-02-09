@@ -16,6 +16,7 @@ package com.jukshio.jwccgateapplib.Activities;
  */
 
 import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -25,9 +26,11 @@ import android.graphics.Matrix;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.media.ExifInterface;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Gravity;
@@ -56,6 +59,8 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import kotlin.Pair;
 
 import static com.jukshio.jwccgateapplib.Activities.CameraSource.*;
 import static com.jukshio.jwccgateapplib.FRCaptureView.FaceDect.authFaceDetector;
@@ -230,10 +235,11 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
         paramsView.isFrontal(n);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onCapture(byte[] data, int angle) {
 
-        Toast.makeText(context, "Image Captured", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(context, "Image Captured", Toast.LENGTH_SHORT).show();
 //        ImageAnalysis.canAddData = false;
         stopCameraSource();
 //        dialog.setMessage("Recognizing...");
@@ -249,6 +255,9 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
 
         Bitmap rotatedbitmap = Bitmap.createBitmap(OriginalBitmap, 0, 0, OriginalBitmap.getWidth(), OriginalBitmap.getHeight(), matrix, true);
         rotatedBitmap2=rotatedbitmap;
+
+
+
 
         Intent intent= new Intent(AuthCameraActivity.this,AfterCapture.class);
         startActivity(intent);

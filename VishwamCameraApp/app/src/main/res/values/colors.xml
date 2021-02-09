@@ -9,5 +9,5 @@
     <color name="white">#FFFFFFFF</color>
 
     <color name="whitecolor">#80FFFFFF</color>
-
+    <color name="titleColor">#DE000000</color>
 </resources>

@@ -15,6 +15,7 @@ package com.jukshio.jwccgateapplib.FRCaptureView;
  * from Vishwam Corp
  */
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -24,6 +25,8 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
+import android.graphics.RectF;
+import android.util.DisplayMetrics;
 
 import com.google.android.gms.vision.face.Face;
 import com.jukshio.jwccgateapplib.FRCaptureView.ParamsView;
@@ -55,7 +58,7 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
     float eyeLeftOpenProbability = -1;
 
     public   static Paint mHintOutlinePaint,mHintOutlinePaint2;
-    private Rect rectangle;
+    private RectF rectangle;
     public Paint mHintTextPaint;
 
     private volatile Face mFace;
@@ -63,6 +66,8 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
     public static Float faceArea;
 
     public static boolean faceIsInTheBox =false , faceRatioOk;
+    int height;
+    int width;
 
     public FaceGraphic(GraphicOverlay overlay, Context context) {
         super(overlay);
@@ -72,6 +77,11 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
         resources = context.getResources();
         marker = BitmapFactory.decodeResource(resources, R.drawable.marker, opt);
         initializePaints(resources);
+        DisplayMetrics metrics = new DisplayMetrics();
+        ((Activity)context1).getWindowManager().getDefaultDisplay().getMetrics(metrics);
+
+        height = metrics.heightPixels;
+        width = metrics.widthPixels;
     }
 
     public void setId(int id) {
@@ -156,7 +166,8 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
 
 
 //            rectangle=new Rect(0,0,ParamsView.width,ParamsView.width*4/3);
-            rectangle=new Rect(7,7,ParamsView.width-7,ParamsView.width*4/3);
+            //rectangle=new Rect(7,7,ParamsView.width-7,ParamsView.width*4/3);
+            rectangle = new RectF((width/2) - (width*2/5), (width*2/3) - (width*2/5), (width/2) + (width*2/5), (width*2/3) + (width*2/5));
 
             faceIsInTheBox = isFaceInTheBox(left, right, top, bottom);
 
@@ -170,6 +181,7 @@ public class FaceGraphic extends GraphicOverlay.Graphic {
 //            canvas.drawRect(left, top, right, bottom, mHintOutlinePaint);
                 canvas.drawCircle(circleX, circleX*4/3, circleRadius, mHintOutlinePaint);
                 canvas.drawRect(rectangle,mHintOutlinePaint2);
+
             }
         }else{
 
