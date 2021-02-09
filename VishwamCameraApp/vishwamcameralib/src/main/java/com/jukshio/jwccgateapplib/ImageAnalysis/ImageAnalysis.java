@@ -28,6 +28,7 @@ import android.graphics.YuvImage;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.jukshio.jwccgateapplib.Utils2;
 import com.microsoft.appcenter.AppCenter;
 import com.microsoft.appcenter.analytics.Analytics;
 import com.microsoft.appcenter.crashes.Crashes;
@@ -107,7 +108,7 @@ public class ImageAnalysis {
             public void run() {
                 try {
                     sdkModelName = preferences.getString("savedModelName", "empty.tflite");
-//                    modeFile = Utils2.getModelFile(context, sdkModelName);
+                    modeFile = Utils2.getModelFile(context, sdkModelName);
                     classifier = TensorFlowImageClassifier.create(
                             assetManager,
                             MODEL_PATH,

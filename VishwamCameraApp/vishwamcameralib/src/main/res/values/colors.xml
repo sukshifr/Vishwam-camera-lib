@@ -28,6 +28,15 @@
     <color name="colorTitle">#414961</color>
     <color name="transparent_white_new">#66000000</color>
     <color name="transparent_black_new">#000000</color>
+    <color name="whiteopacity">#80FFFFFF</color>
     <color name="boxBlue">#0080FF</color>
+
+    <color name="jioBlue">#222979</color>
+    <color name="btTextColor">#000000</color>
+    <color name="selectedStroke">#CDFDE6</color>
+    <color name="unselectedStroke">#858891</color>
+    <color name="selectedBg">#EEFFF7</color>
+    <color name="closeIconTint">#03DAC5</color>
+    <color name="unselectedClosIconColor">#E9E9E9</color>
 
 </resources>

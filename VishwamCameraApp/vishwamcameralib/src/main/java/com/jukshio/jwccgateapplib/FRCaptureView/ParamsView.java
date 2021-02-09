@@ -126,17 +126,34 @@ public class ParamsView extends View implements View.OnClickListener {
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         titleViewParams.addRule(RelativeLayout.ALIGN_PARENT_TOP);
-        titleViewParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        titleViewParams.setMargins(40, 80, 40, 0);
+        titleViewParams.addRule(RelativeLayout.ALIGN_LEFT);
+        titleViewParams.setMargins(150, 50, 10, 0);
 
         TextView titleView = new TextView(context);
+        titleView.setId(R.id.instructionTitle);
         titleView.setLayoutParams(titleViewParams);
-        titleView.setTextColor(getResources().getColor(R.color.white));
-        titleView.setTextSize(18);
+        titleView.setTextColor(Color.BLACK);
+        titleView.setTextSize(16);
         titleView.setText(titleString);
-        titleView.setTypeface(null, Typeface.BOLD);
+//        titleView.setTypeface(null, Typeface.BOLD);
 //        titleView.setBackgroundColor(getResources().getColor(R.color.white));
         rlCustomLayout.addView(titleView);
+
+        RelativeLayout.LayoutParams titleViewParams1 = new RelativeLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
+        titleViewParams1.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        titleViewParams1.addRule(RelativeLayout.BELOW,titleView.getId());
+        titleViewParams1.setMargins(150, 130, 10, 0);
+
+        TextView titleView1 = new TextView(context);
+        titleView1.setId(R.id.instruction1);
+        titleView1.setLayoutParams(titleViewParams1);
+        titleView1.setTextColor(Color.BLACK);
+        titleView1.setTextSize(14);
+        titleView1.setText("Place your face in the placeholder and make sure you’re well it.");
+
+        rlCustomLayout.addView(titleView1);
 
         btnTag = new Button(context);
         btnTag.setId(R.id.capture_btn);
@@ -297,7 +314,7 @@ public class ParamsView extends View implements View.OnClickListener {
                     mHintOutlinePaint.setStrokeWidth(getResources().getDimension(R.dimen.hintStroke));
 
                     mHintOutlinePaint2=new Paint();
-                    mHintOutlinePaint2.setColor(getResources().getColor(R.color.boxBlue));
+                    mHintOutlinePaint2.setColor(Color.TRANSPARENT);
                     mHintOutlinePaint2.setStyle(Paint.Style.STROKE);
                     mHintOutlinePaint2.setStrokeWidth(getResources().getDimension(R.dimen.rectStroke));
 //                    buttonChange(R.drawable.ic_mhere_cam_btn, true, "",true,getResources().getString(R.string.captureIntimation));

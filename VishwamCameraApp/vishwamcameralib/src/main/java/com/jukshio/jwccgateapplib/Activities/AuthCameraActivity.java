@@ -33,9 +33,11 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.images.Size;
 import com.jukshio.jwccgateapplib.FRCaptureView.CameraView;
@@ -93,9 +95,10 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
     public Bitmap OriginalBitmap, rotatedbitmap;
     //    CameraView cameraView;
     ParamsView paramsView;
-    boolean isAuth=false;
+    boolean isAuth = false;
     boolean continuousCapture = false;
     TextView responseTv;
+    public static Bitmap rotatedBitmap2;
 
 //    FaceDetector faceFramedetector;
 
@@ -117,9 +120,9 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
 
 //        authFrameFaceDect = new FaceDect(CameraActivity.this);
 
-        Bundle bundle=getIntent().getExtras();
-        if (bundle!=null){
-            isAuth=bundle.getBoolean("isAuth");
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            isAuth = bundle.getBoolean("isAuth");
             continuousCapture = bundle.getBoolean("countinuousCapture");
         }
         context = getApplicationContext();
@@ -134,7 +137,7 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
         CameraView cameraView = new CameraView(this);
         relativeLayout.addView(cameraView);
 
-        paramsView = new ParamsView(this, relativeLayout, true, "Face Authentication", false, true,true, this);
+        paramsView = new ParamsView(this, relativeLayout, true, "Scan Your Face", false, true, false, this);
         relativeLayout.addView(paramsView);
 
 //        faceFramedetector = new FaceDetector.Builder(CameraActivity.this)
@@ -150,7 +153,7 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
 //        instructionTextview.addRule(RelativeLayout.ALIGN_PARENT_TOP);
         instructionTextview.addRule(RelativeLayout.CENTER_HORIZONTAL);
 //        instructionTextview.addRule(RelativeLayout.ABOVE,btnTag.getId());
-        instructionTextview.setMargins(0, 0,0,50);
+        instructionTextview.setMargins(0, 0, 0, 50);
 //        instructionTextview.setMargins(0, (int) ((width*2/3) + (width*0.45f)),0,0);
         responseTv.setTextSize(18);
         responseTv.setTextColor(getResources().getColor(R.color.yellow_color));
@@ -230,11 +233,14 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
     @Override
     public void onCapture(byte[] data, int angle) {
 
+        Toast.makeText(context, "Image Captured", Toast.LENGTH_SHORT).show();
 //        ImageAnalysis.canAddData = false;
         stopCameraSource();
-        dialog.setMessage("Recognizing...");
-        dialog.setCancelable(false);
-        dialog.show();
+//        dialog.setMessage("Recognizing...");
+//        dialog.setCancelable(false);
+//        dialog.show();
+
+
 
         Bitmap OriginalBitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
 
@@ -242,8 +248,12 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
         matrix.postRotate(angle);
 
         Bitmap rotatedbitmap = Bitmap.createBitmap(OriginalBitmap, 0, 0, OriginalBitmap.getWidth(), OriginalBitmap.getHeight(), matrix, true);
+        rotatedBitmap2=rotatedbitmap;
 
-        Bitmap kothaBitmap = Bitmap.createScaledBitmap(rotatedbitmap, 224, 224, false);
+        Intent intent= new Intent(AuthCameraActivity.this,AfterCapture.class);
+        startActivity(intent);
+
+   /*     Bitmap kothaBitmap = Bitmap.createScaledBitmap(rotatedbitmap, 224, 224, false);
         Bitmap bitmap160 = Bitmap.createScaledBitmap(rotatedbitmap, 160, 160, false);
 
         long start_time = System.currentTimeMillis();
@@ -259,7 +269,7 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
         } else {
             Bitmap compressed = faceDect.getSquareBitmap(rotatedbitmap);
             saveCropedFile(compressed, "square");
-        }
+        }*/
 
 //        saveFile(rotatedbitmap);
     }
@@ -392,6 +402,22 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    public static void start(Context context, JSONObject faceParams) {
+
+        Intent intent = new Intent(context, AuthCameraActivity.class);
+//        LiveFaceAuthHolder.getInstance().setLiveFaceAuthResultListener(onLiveFaceCapturedResultListener);
+        try {
+//            intent.putExtra("env", faceParams.getInt("env"));
+//            intent.putExtra("capture_type", faceParams.getInt("capture_type"));
+//            intent.putExtra("referenceId", faceParams.getJSONObject("headers").getString("referenceId"));
+
+            context.startActivity(intent);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -533,6 +559,7 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
         }
         canAddData = true;
     }
+
     boolean isCameraStarted = false;
 
     private void stopCameraSource() {
@@ -616,7 +643,7 @@ public class AuthCameraActivity extends AppCompatActivity implements FaceDect.On
     public void onCameraClose() {
 //      okForImageAnalysis = false;
         setupImageAnalysis();
-        if (dialog.isShowing()){
+        if (dialog.isShowing()) {
             dialog.dismiss();
         }
 //        Intent i = new Intent(AuthCameraActivity.this, MainActivity.class);

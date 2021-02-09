@@ -2,4 +2,6 @@
 <resources>
     <item name="capture_btn" type="id"/>
     <item name="exitbtn" type="id"/>
+    <item name="instruction1" type="id"/>
+    <item name="instructionTitle" type="id"/>
 </resources>

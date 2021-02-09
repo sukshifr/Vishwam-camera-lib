@@ -4,20 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.AuthCameraActivity"
-    android:background="@drawable/gradient"
+    android:background="@color/whiteopacity"
     android:id="@+id/camRLayout">
 
     <com.jukshio.jwccgateapplib.Activities.CameraSourcePreview
         android:id="@+id/previewAuth"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.jukshio.jwccgateapplib.Tracker.GraphicOverlay
-            android:id="@+id/faceOverlayAuth"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
     </com.jukshio.jwccgateapplib.Activities.CameraSourcePreview>
-
+    <com.jukshio.jwccgateapplib.Tracker.GraphicOverlay
+        android:id="@+id/faceOverlayAuth"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <ImageView
         android:layout_width="match_parent"
@@ -30,7 +29,20 @@
         android:layout_height="60dp"
         android:id="@+id/camera"
         android:layout_centerInParent="true"
+        android:visibility="gone"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="20dp"/>
+    <Button
+        android:id="@+id/button"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_gravity="bottom"
+        android:paddingVertical="14dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/jioBlue"
+        android:layout_alignParentBottom="true"
+        android:text="call for help" />
 
 </RelativeLayout>

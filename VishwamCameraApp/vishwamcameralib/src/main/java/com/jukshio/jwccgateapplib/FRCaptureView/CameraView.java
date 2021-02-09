@@ -45,10 +45,10 @@ public class CameraView extends View {
     @SuppressLint("NewApi")
     private void init() {
 
-        transparentPaint.setColor(getResources().getColor(android.R.color.transparent));
+        transparentPaint.setColor(getResources().getColor(R.color.whiteopacity));
         transparentPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
 //        semiTransparentPaint.setColor(getResources().getColor(android.R.color.white));
-        Shader gradient = new LinearGradient(0,0,0,getHeight(), getResources().getColor(R.color.transparent_white_new), getResources().getColor(R.color.transparent_black_new),Shader.TileMode.MIRROR);
+        Shader gradient = new LinearGradient(0,0,0,getHeight(), getResources().getColor(R.color.whiteopacity), getResources().getColor(R.color.whiteopacity),Shader.TileMode.MIRROR);
         semiTransparentPaint.setDither(true);
         semiTransparentPaint.setShader(gradient);
     }

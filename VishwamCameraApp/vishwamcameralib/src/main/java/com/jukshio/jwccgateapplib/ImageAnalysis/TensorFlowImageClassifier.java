@@ -37,6 +37,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;
 
+import static com.jukshio.jwccgateapplib.Networking.VishwamNetworkHelper.loadedModelName;
+
 //import static com.sukshi.vishwamattendancefrlib.Networking.VishwamNetworkHelper.loadedModelName;
 
 public class TensorFlowImageClassifier implements Classifier {
@@ -63,28 +65,28 @@ public class TensorFlowImageClassifier implements Classifier {
         modelFilePath = modeFile;
         starttime= System.currentTimeMillis();
         TensorFlowImageClassifier classifier = new TensorFlowImageClassifier();
-
-        classifier.interpreter = new Interpreter(classifier.loadModelFile(assetManager, modelPath));
-        classifier.labelList = classifier.loadLabelList(assetManager, labelPath);
-        classifier.inputSize = inputSize;
-
-//        if (modelFilePath != null && modelFilePath.exists()) {
-//            String filePath=modelFilePath.getPath();
-//            loadedModelName= filePath.substring(filePath.lastIndexOf("/")+1);
-//            Log.e("ModelExists", "File is in folder"+loadedModelName);
-//            classifier.interpreter = new Interpreter(modelFilePath);
-//            classifier.labelList = classifier.loadLabelList(assetManager, labelPath);
-//            classifier.inputSize = inputSize;
-////            Log.e("Timestamp", String.valueOf(System.currentTimeMillis()-starttime));
 //
-//        } else {
-//            loadedModelName= "08012021_A.tflite";
-//            Log.e("ModelExists", "File is in assets"+loadedModelName);
-//            classifier.interpreter = new Interpreter(classifier.loadModelFile(assetManager, modelPath));
-//            classifier.labelList = classifier.loadLabelList(assetManager, labelPath);
-//            classifier.inputSize = inputSize;
-////            Log.e("Timestamp", String.valueOf(System.currentTimeMillis()-starttime));
-//        }
+//        classifier.interpreter = new Interpreter(classifier.loadModelFile(assetManager, modelPath));
+//        classifier.labelList = classifier.loadLabelList(assetManager, labelPath);
+//        classifier.inputSize = inputSize;
+
+        if (modelFilePath != null && modelFilePath.exists()) {
+            String filePath=modelFilePath.getPath();
+            loadedModelName= filePath.substring(filePath.lastIndexOf("/")+1);
+            Log.e("ModelExists", "File is in folder"+loadedModelName);
+            classifier.interpreter = new Interpreter(modelFilePath);
+            classifier.labelList = classifier.loadLabelList(assetManager, labelPath);
+            classifier.inputSize = inputSize;
+//            Log.e("Timestamp", String.valueOf(System.currentTimeMillis()-starttime));
+
+        } else {
+            loadedModelName= "08012021_A.tflite";
+            Log.e("ModelExists", "File is in assets"+loadedModelName);
+            classifier.interpreter = new Interpreter(classifier.loadModelFile(assetManager, modelPath));
+            classifier.labelList = classifier.loadLabelList(assetManager, labelPath);
+            classifier.inputSize = inputSize;
+//            Log.e("Timestamp", String.valueOf(System.currentTimeMillis()-starttime));
+        }
 
         return classifier;
     }

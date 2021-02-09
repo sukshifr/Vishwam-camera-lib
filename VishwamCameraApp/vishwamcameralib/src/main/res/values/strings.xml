@@ -6,6 +6,9 @@
 
     <string name="certificateKey">j8wGqDwODbCMnkhNjrHZNAuYbD5uMDNRkOiyizN9n84=</string>
     <string name="key">8nmjxevk2ixitfr7nevv0upz6g3qx0uy</string>
+    <string name="app_id">jioatt</string>
+    <string name="org_id">kushi</string>
+
 
     <string name="captureIntimation">  Capturing image from the outer &lt;font color="#0080FF">Blue Box &lt;/font></string>
 </resources>
