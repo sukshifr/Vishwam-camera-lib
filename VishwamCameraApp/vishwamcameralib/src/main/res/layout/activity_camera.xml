@@ -41,6 +41,7 @@
         android:paddingVertical="14dp"
         android:layout_marginBottom="10dp"
         android:textColor="@color/white"
+        android:visibility="gone"
         android:backgroundTint="@color/jioBlue"
         android:layout_alignParentBottom="true"
         android:text="call for help" />

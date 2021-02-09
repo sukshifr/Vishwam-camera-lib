@@ -157,22 +157,26 @@ public class ParamsView extends View implements View.OnClickListener {
 
         btnTag = new Button(context);
         btnTag.setId(R.id.capture_btn);
-        RelativeLayout.LayoutParams btnParams = new RelativeLayout.LayoutParams(200, 200);
+        RelativeLayout.LayoutParams btnParams = new RelativeLayout.LayoutParams( ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT);
         btnParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
         btnParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 //        btnParams.setMargins(0,(width*2/3) + (width*2/3),0,0);
 //        btnParams.setMargins(0,0,0,80);
-        btnParams.setMargins(0,0,0,(int) ((height- (width*4/3))*0.25f));
+        btnParams.setMargins(100,0,100,(int) ((height- (width*4/3))*0.25f));
         btnTag.setLayoutParams(btnParams);
-        btnTag.setBackground(getResources().getDrawable(R.drawable.disable_camera));
+        btnTag.setText("call for help");
+        btnTag.setTextColor(Color.WHITE);
+//        btnTag.setBackgroundColor(context.getResources().getColor(R.color.jioBlue));
+        btnTag.setBackground(getResources().getDrawable(R.drawable.background_curved_corners_button));
         btnTag.setOnClickListener((OnClickListener) this);
         rlCustomLayout.addView(btnTag);
 
-        if (!inRegCam && autoCap){
+        /*if (!inRegCam && autoCap){
             btnTag.setVisibility(INVISIBLE);
         }else {
             btnTag.setVisibility(VISIBLE);
-        }
+        }*/
 
         captureIntimationtxt = new TextView(context);
         RelativeLayout.LayoutParams captureintimationTextview = new RelativeLayout.LayoutParams(
