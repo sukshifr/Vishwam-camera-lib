@@ -1335,7 +1335,7 @@ public class VishwamNetworkHelper {
             progressDialog = new ProgressDialog(context);
             progressDialog.setMessage("Setting up things...");
             progressDialog.setCancelable(false);
-            progressDialog.show();
+//            progressDialog.show();
         }
 
         @Override

@@ -99,7 +99,7 @@ public class CameraView extends View {
         cnvs.drawOval(oval1,transparentPaint );
 
 
-        canvas.drawBitmap(bitmap, 0, 0, semiTransparentPaint);
+        canvas.drawBitmap(transform(bitmap), 0, 0, semiTransparentPaint);
     }
 
     @Override
@@ -133,7 +133,7 @@ public class CameraView extends View {
         Allocation output = Allocation.createFromBitmap(renderScript, blurredBitmap);
 
         script.setInput(input);
-        script.setRadius(25f);
+        script.setRadius(2f);
         script.forEach(output);
         output.copyTo(blurredBitmap);
 
