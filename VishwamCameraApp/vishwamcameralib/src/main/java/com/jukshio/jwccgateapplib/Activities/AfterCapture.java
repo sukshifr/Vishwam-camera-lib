@@ -3,6 +3,7 @@ package com.jukshio.jwccgateapplib.Activities;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -25,6 +26,15 @@ public class AfterCapture extends AppCompatActivity {
 //        Glide.with(getApplicationContext())
 //                .load(rotatedBitmap2)
 //                .into(imageView);
+
+        Handler handler=new Handler();
+
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        },2000);
 
 
     }
